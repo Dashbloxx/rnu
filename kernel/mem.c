@@ -1,9 +1,12 @@
-void *memset(void *s, int c,  unsigned int len)
+#include <stdint.h>
+#include <stddef.h>
+
+void *memset(void *s, int c, size_t l)
 {
-    unsigned char* p = s;
-    while(len--)
+    uint8_t* p = s;
+    while(l--)
     {
-        *p++ = (unsigned char)c;
+        *p++ = (uint8_t)c;
     }
     return s;
 }

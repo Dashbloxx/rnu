@@ -4,6 +4,7 @@
     },
     "files.associations": {
         "stdint.h": "c",
-        "gdt.h": "c"
+        "gdt.h": "c",
+        "stddef.h": "c"
     }
 }
