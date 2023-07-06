@@ -1,0 +1,9 @@
+{
+    "files.exclude": {
+        "**/*.o": true
+    },
+    "files.associations": {
+        "stdint.h": "c",
+        "gdt.h": "c"
+    }
+}
