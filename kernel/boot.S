@@ -1,29 +1,40 @@
-.set ALIGN,    1<<0
-.set MEMINFO,  1<<1
-.set FLAGS,    ALIGN | MEMINFO
-.set MAGIC,    0x1BADB002
-.set CHECKSUM, -(MAGIC + FLAGS)
+.section .multiboot, "aw"
+    .align 4
+    .long 0x1BADB002
+    .long (1<<0 | 1<<1 | 1<<2)
+    .long -(0x1BADB002 + (1<<0 | 1<<1 | 1<<2))
+    .long 0x00000000  /* header_addr */
+    .long 0x00000000  /* load_addr */
+    .long 0x00000000  /* load_end_addr */
+    .long 0x00000000  /* bss_end_addr */
+    .long 0x00000000  /* entry_addr */
+    /* Graphics requests */
+    .long 0x00000000  /* 0 = linear graphics */
+    .long 1024
+    .long 768
+    .long 32
 
-.section .multiboot
-.align 4
-.long MAGIC
-.long FLAGS
-.long CHECKSUM
-
-.section .bss
-.align 16
+.section .bss, "aw"
+    .align 16
 stack_bottom:
-.skip 16384
+    .space 16384  /* 16 KiB */
 stack_top:
 
-.section .text
 .global _start
-.type _start, @function
-_start:
-	mov $stack_top, %esp
-	call kernel_main
-	cli
-1:	hlt
-	jmp 1b
+.extern kmain
 
-.size _start, . - _start
+.section .text
+
+_start:
+    movl $stack_top, %esp
+
+    /* push multiboot parameter to kmain() */
+    pushl %ebx
+
+    /* ...and run! */
+    cli
+    call main
+
+    /* never reach here */
+    cli
+    hlt
